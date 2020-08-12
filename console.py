@@ -150,7 +150,8 @@ class HBNBCommand(cmd.Cmd):
         storage.save()
         print(new_instance.id)
         storage.save()
-        self.do_update(args)
+        print(storage.all())
+        #self.do_update(args)
 
     def help_create(self):
         """ Help information for the create method """
@@ -283,7 +284,7 @@ class HBNBCommand(cmd.Cmd):
 
         # generate key from class and id
         key = c_name + "." + c_id
-
+        print(key)
         # determine if key is present
         if key not in storage.all():
             print("** no instance found **")

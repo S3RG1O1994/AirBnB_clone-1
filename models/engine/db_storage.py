@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 from os import environ
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 from models.base_model import Base
 from models.user import User
 from models.state import State
@@ -24,7 +24,8 @@ class DBStorage:
         MySQL_DB = environ.get('HBNB_MYSQL_DB')
         env = environ.get('HBNB_ENV')
         self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.
-        format(MySQL_User, MySQL_Pwd, MySQL_Host, MySQL_DB), pool_pre_ping=True)
+                                      format(MySQL_User, MySQL_Pwd, MySQL_Host,
+                                             MySQL_DB), pool_pre_ping=True)
         if env == 'test':
             Base.metadata.drop_all(self.__engine)
 
@@ -32,17 +33,19 @@ class DBStorage:
         """ display all objs of a class """
         coso = {}
         if cls is not None:
-            query = self.__session.query(cls).all()
+            query = self.__session.query(cls.__tablename__).all()
             for item in query:
                 kay = "{}.{}".format(type(item).__name__, item.id)
-                coso.update({kay:item})
+                # coso.update({kay:item})
+                coso[kay] = item
         else:
             clase = [City, State, User, Place, Amenity, Review]
             for box in clase:
-                query = self.__session.query(box).all()
+                query = self.__session.query(box.__tablename__).all()
                 for item in query:
-                kay = "{}.{}".format(type(item).__name__, item.id)
-                coso.update({kay:item})
+                    kay = "{}.{}".format(type(item).__name__, item.id)
+                    # coso.update({kay:item})
+                    coso[kay] = item
         return coso
 
     def new(self, obj):
@@ -51,6 +54,7 @@ class DBStorage:
 
     def save(self):
         """ commit in session """
+        print(self.__session)
         self.__session.commit()
 
     def delete(self, obj=None):
@@ -60,8 +64,9 @@ class DBStorage:
 
     def reload(self):
         """ re-load DB """
+
         Base.metadata.create_all(self.__engine)
-        session_factory = sessionmaker(bind=self.__engine, 
-        expire_on_commit=False)
+        session_factory = sessionmaker(bind=self.__engine,
+                                       expire_on_commit=False)
         Session = scoped_session(session_factory)
         self.__session = Session()
