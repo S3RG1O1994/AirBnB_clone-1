@@ -114,44 +114,36 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, args):
-        """ Create an object of any class"""
-        # isolate cls from id/args, ex: (<cls>, delim, <id/args>)
+        ''' Create an instance of specific class '''
+        ''' Validations '''
         args_tokken = args.partition(" ")
         if not args:
-            print("** class name missing **")
+            print("* class name missing *")
             return
         elif args_tokken[0] not in HBNBCommand.classes:
-            print("** class doesn't exist **")
+            print("* class doesn't exist *")
             return
-        new_instance = HBNBCommand.classes[args_tokken[0]]()
+
+
+        ''' get value '''
+
         param = args_tokken[2]
-        new_list = []
-        param = param.partition(' ')
-        while param != ('', '', ''):
-            new_list.append(param[0])
-            param = param[2]
-            param = param.partition(' ')
-        for i in range(0, len(new_list)-1):
-            if i < len(new_list):
-                if '=' not in new_list[i]:
-                    new_list[i-1] = new_list[i-1] + " {}".format(new_list[i])
-                    new_list.pop(i)
-                if '=' not in new_list[i]:
-                    new_list[i-1] = new_list[i-1] + " {}".format(new_list[i])
-                    new_list.pop(i)
+        new_list = param.split()
+        ''' [<key name>=<value>, <key name>=<value>, ...]'''
+
+        ''' set value '''
+        ''' [name=value, pass=pass] '''
         for i in range(len(new_list)):
             new_list[i] = new_list[i].split('=')
-        for i in range(len(new_list)):
             new_list[i][1] = new_list[i][1].replace('_', ' ')
-        args = '{} {} {}'.format(args_tokken[0],
-                                 new_instance.id,
-                                 dict(new_list))
-        args = args.replace('"', '')
+            new_list[i][1] = new_list[i][1].replace('"', '')
+        ''' [[arg, "value val"], [pass, pass]] '''
+        ''' Genera args para usar la funcion update '''
+        args = dict(new_list)
+        new_instance = HBNBCommand.classes[args_tokken[0]](**args)
         storage.save()
         print(new_instance.id)
         storage.save()
-        print(storage.all())
-        #self.do_update(args)
 
     def help_create(self):
         """ Help information for the create method """
@@ -227,17 +219,15 @@ class HBNBCommand(cmd.Cmd):
     def do_all(self, args):
         """ Shows all objects, or all objects of a class"""
         print_list = []
-
         if args:
             args = args.split(' ')[0]  # remove possible trailing args
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in storage._FileStorage__objects.items():
-                if k.split('.')[0] == args:
-                    print_list.append(str(v))
+            for k, v in storage.all(HBNBCommand.classes[args]).items():
+                print_list.append(str(v))
         else:
-            for k, v in storage._FileStorage__objects.items():
+            for k, v in storage.all().items():
                 print_list.append(str(v))
 
         print(print_list)
@@ -280,11 +270,10 @@ class HBNBCommand(cmd.Cmd):
             c_id = args[0]
         else:  # id not present
             print("** instance id missing **")
-            return
+            return  
 
         # generate key from class and id
         key = c_name + "." + c_id
-        print(key)
         # determine if key is present
         if key not in storage.all():
             print("** no instance found **")

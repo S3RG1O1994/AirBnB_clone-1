@@ -33,16 +33,14 @@ class DBStorage:
         """ display all objs of a class """
         coso = {}
         if cls is not None:
-            query = self.__session.query(cls.__tablename__).all()
-            for item in query:
+            for item in self.__session.query(cls).all():
                 kay = "{}.{}".format(type(item).__name__, item.id)
                 # coso.update({kay:item})
                 coso[kay] = item
         else:
-            clase = [City, State, User, Place, Amenity, Review]
+            clase = [City, State]#, User, Place, Amenity, Review]
             for box in clase:
-                query = self.__session.query(box.__tablename__).all()
-                for item in query:
+                for item in self.__session.query(box):
                     kay = "{}.{}".format(type(item).__name__, item.id)
                     # coso.update({kay:item})
                     coso[kay] = item
@@ -54,7 +52,6 @@ class DBStorage:
 
     def save(self):
         """ commit in session """
-        print(self.__session)
         self.__session.commit()
 
     def delete(self, obj=None):
