@@ -19,4 +19,14 @@ class Place(BaseModel, Base):
     price_by_night = Column(Integer, default=0, nullable=False)
     latitude = Column(Float)
     longitude = Column(Float)
+    reviews = relationship('Review', cascade="all, delete, delete-orphan", backref='place')
     amenity_ids = []
+
+    @property
+    def reviews(self):
+        ret_list = []
+        review_dir = models.storage.all(Review)
+        for sub_dir in review_dir.values():
+            if sub_dir.place_id is self.id:
+                ret_list.append(sub_dir)
+        return ret_list
