@@ -130,7 +130,14 @@ class HBNBCommand(cmd.Cmd):
         param = args_tokken[2]
         new_list = param.split()
         ''' [<key name>=<value>, <key name>=<value>, ...]'''
-
+        for i in range(0, len(new_list)-1):
+            if i < len(new_list):
+                if '=' not in new_list[i]:
+                    new_list[i-1] = new_list[i-1] + " {}".format(new_list[i])
+                    new_list.pop(i)
+                if '=' not in new_list[i]:
+                    new_list[i-1] = new_list[i-1] + " {}".format(new_list[i])
+                    new_list.pop(i)
         ''' set value '''
         ''' [name=value, pass=pass] '''
         for i in range(len(new_list)):
