@@ -1,89 +1,77 @@
 #!/usr/bin/python3
-''' User unittesting '''
-
+"""test for user"""
 import unittest
-import pep8
-import json
 import os
-from datetime import datetime
-from models import user
+from models.user import User
 from models.base_model import BaseModel
-
-
-class TestUserDocu(unittest.TestCase):
-    ''' test Base Documentation '''
-
-    def test_pep8(self):
-        """ Test that models/base_model.py conforms to PEP8 """
-        pep8style = pep8.StyleGuide(quiet=True)
-        result = pep8style.check_files(['models/user.py'])
-        self.assertEqual(result.total_errors, 0, "Fix Your PEP8 Style")
-
-    def test_pep8_base(self):
-        """ Test the test file xD """
-        pep8style = pep8.StyleGuide(quiet=True)
-        r = pep8style.check_files(['tests/test_models/test_user.py'])
-        self.assertEqual(r.total_errors, 0, "Fix Your PEP8 Style")
-
-    def test_docstring(self):
-        """test if docstring"""
-        self.assertIsNotNone(user.User.__doc__)
-
-    def test_docmodule(self):
-        """ Tests module """
-        self.assertTrue(len(user.__doc__) >= 1)
+import pep8
 
 
 class TestUser(unittest.TestCase):
-    ''' Test base class '''
+    """this will test the User class"""
 
     @classmethod
     def setUpClass(cls):
-        '''
-        is called with the class as the only argument
-        and must be decorated as a classmethod():
-        '''
-        pass
+        """set up for test"""
+        cls.user = User()
+        cls.user.first_name = "Kevin"
+        cls.user.last_name = "Yook"
+        cls.user.email = "yook00627@gmamil.com"
+        cls.user.password = "secret"
 
     @classmethod
-    def tearDown(cls):
-        ''' After tests, remove json file '''
+    def teardown(cls):
+        """at the end of the test this will tear it down"""
+        del cls.user
+
+    def tearDown(self):
+        """teardown"""
         try:
-            remove("file.json")
+            os.remove("file.json")
         except Exception:
             pass
 
-    def test_subClass(self):
-        '''Check if object have inheritance of the superclass'''
-        obj = user.User()
-        self.assertTrue(issubclass(type(obj), BaseModel))
+    def test_pep8_User(self):
+        """Tests pep8 style"""
+        style = pep8.StyleGuide(quiet=True)
+        p = style.check_files(['models/user.py'])
+        self.assertEqual(p.total_errors, 0, "fix pep8")
 
-    def test_typos(self):
-        ''' check for attributes '''
-        obj = user.User()
-        self.assertEqual(type(obj.email), str)
-        self.assertEqual(type(obj.password), str)
-        self.assertEqual(type(obj.first_name), str)
-        self.assertEqual(type(obj.last_name), str)
-        self.assertEqual(type(obj.id), str)
-        self.assertEqual(type(obj.created_at), datetime)
-        self.assertEqual(type(obj.updated_at), datetime)
-        self.assertEqual(obj.__class__.__name__, 'User')
+    def test_checking_for_docstring_User(self):
+        """checking for docstrings"""
+        self.assertIsNotNone(User.__doc__)
 
-    def test_verify_attr(self):
-        ''' check for attributes '''
-        obj = user.User()
-        self.assertTrue(hasattr(obj, 'email'))
-        self.assertTrue(hasattr(obj, 'password'))
-        self.assertTrue(hasattr(obj, 'first_name'))
-        self.assertTrue(hasattr(obj, 'last_name'))
-        self.assertTrue(hasattr(obj, 'id'))
-        self.assertTrue(hasattr(obj, 'created_at'))
-        self.assertTrue(hasattr(obj, 'updated_at'))
-        self.assertEqual(obj.__class__.__name__, 'User')
+    def test_attributes_User(self):
+        """chekcing if User have attributes"""
+        self.assertTrue('email' in self.user.__dict__)
+        self.assertTrue('id' in self.user.__dict__)
+        self.assertTrue('created_at' in self.user.__dict__)
+        self.assertTrue('updated_at' in self.user.__dict__)
+        self.assertTrue('password' in self.user.__dict__)
+        self.assertTrue('first_name' in self.user.__dict__)
+        self.assertTrue('last_name' in self.user.__dict__)
 
-    def test_kwargs(self):
-        """Test the class - BaseModel passing kwargs """
-        dictionary = {'id': '662a23b3-abc7-4f43-81dc-64c000000c00'}
-        user1 = user.User(**dictionary)
-        self.assertTrue(issubclass(user1.__class__, BaseModel))
+    def test_is_subclass_User(self):
+        """test if User is subclass of Basemodel"""
+        self.assertTrue(issubclass(self.user.__class__, BaseModel), True)
+
+    def test_attribute_types_User(self):
+        """test attribute type for User"""
+        self.assertEqual(type(self.user.email), str)
+        self.assertEqual(type(self.user.password), str)
+        self.assertEqual(type(self.user.first_name), str)
+        self.assertEqual(type(self.user.first_name), str)
+
+    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") == "db", "No apply for db")
+    def test_save_User(self):
+        """test if the save works"""
+        self.user.save()
+        self.assertNotEqual(self.user.created_at, self.user.updated_at)
+
+    def test_to_dict_User(self):
+        """test if dictionary works"""
+        self.assertEqual('to_dict' in dir(self.user), True)
+
+
+if __name__ == "__main__":
+    unittest.main()

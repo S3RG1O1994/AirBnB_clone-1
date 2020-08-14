@@ -1,82 +1,71 @@
 #!/usr/bin/python3
-''' User unittesting '''
-
+"""test for city"""
 import unittest
-import pep8
-import json
-from datetime import datetime
+import os
 from models.city import City
 from models.base_model import BaseModel
-import os
-
-
-class TestCitydocu(unittest.TestCase):
-    ''' test Base Documentation '''
-
-    def test_pep8(self):
-        """ Test that models/base_model.py conforms to PEP8 """
-        pep8style = pep8.StyleGuide(quiet=True)
-        result = pep8style.check_files(['models/city.py'])
-        self.assertEqual(result.total_errors, 0, "Fix Your PEP8 Style")
-
-    def test_pep8_base(self):
-        """ Test the test file xD """
-        pep8style = pep8.StyleGuide(quiet=True)
-        r = pep8style.check_files(['tests/test_models/test_city.py'])
-        self.assertEqual(r.total_errors, 0, "Fix Your PEP8 Style")
-
-    def test_docstring(self):
-        """test if docstring"""
-        self.assertIsNotNone(City.__doc__)
-
-    def test_docmodule(self):
-        """ Tests module """
-        self.assertTrue(len(City.__doc__) >= 1)
+import pep8
 
 
 class TestCity(unittest.TestCase):
-    """ Test base class """
+    """this will test the city class"""
 
     @classmethod
     def setUpClass(cls):
-        '''
-        is called with the class as the only argument
-        and must be decorated as a classmethod():
-        '''
-        pass
+        """set up for test"""
+        cls.city = City()
+        cls.city.name = "LA"
+        cls.city.state_id = "CA"
 
     @classmethod
-    def tearDown(cls):
-        ''' After tests, remove json file '''
+    def teardown(cls):
+        """at the end of the test this will tear it down"""
+        del cls.city
+
+    def tearDown(self):
+        """teardown"""
         try:
-            remove("file.json")
+            os.remove("file.json")
         except Exception:
             pass
 
-    def test_subClass(self):
-        '''Check if object have inheritance of the superclass'''
-        obj = City()
-        self.assertTrue(issubclass(type(obj), BaseModel))
+    def test_pep8_City(self):
+        """Tests pep8 style"""
+        style = pep8.StyleGuide(quiet=True)
+        p = style.check_files(['models/city.py'])
+        self.assertEqual(p.total_errors, 0, "fix pep8")
 
-    def test_typos(self):
-        ''' check for attributes '''
-        obj = City()
-        self.assertEqual(type(obj.state_id), str)
-        self.assertEqual(type(obj.id), str)
-        self.assertEqual(type(obj.created_at), datetime)
-        self.assertEqual(type(obj.updated_at), datetime)
-        self.assertEqual(obj.__class__.__name__, 'City')
+    def test_checking_for_docstring_City(self):
+        """checking for docstrings"""
+        self.assertIsNotNone(City.__doc__)
 
-    def test_verify_attr(self):
-        ''' check for attributes '''
-        obj = City()
-        self.assertTrue(hasattr(obj, 'state_id'))
-        self.assertTrue(hasattr(obj, 'id'))
-        self.assertTrue(hasattr(obj, 'created_at'))
-        self.assertTrue(hasattr(obj, 'updated_at'))
+    def test_attributes_City(self):
+        """chekcing if City have attributes"""
+        self.assertTrue('id' in self.city.__dict__)
+        self.assertTrue('created_at' in self.city.__dict__)
+        self.assertTrue('updated_at' in self.city.__dict__)
+        self.assertTrue('state_id' in self.city.__dict__)
+        self.assertTrue('name' in self.city.__dict__)
 
-    def test_kwargs(self):
-        """Test the class - BaseModel passing kwargs """
-        dictonary = {'id': '662a23b3-abc7-4f43-81dc-64c000000c00'}
-        user1 = City(**dictonary)
-        self.assertTrue(issubclass(user1.__class__, BaseModel))
+    def test_is_subclass_City(self):
+        """test if City is subclass of Basemodel"""
+        self.assertTrue(issubclass(self.city.__class__, BaseModel), True)
+
+    def test_attribute_types_City(self):
+        """test attribute type for City"""
+        self.assertEqual(type(self.city.name), str)
+        self.assertEqual(type(self.city.state_id), str)
+
+    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") == "db", "No apply for db")
+    def test_save_City(self):
+        """test if the save works"""
+        self.city.save()
+        self.assertNotEqual(self.city.created_at, self.city.updated_at)
+
+    def test_to_dict_City(self):
+        """test if dictionary works"""
+        self.assertEqual('to_dict' in dir(self.city), True)
+
+
+if __name__ == "__main__":
+    unittest.main()

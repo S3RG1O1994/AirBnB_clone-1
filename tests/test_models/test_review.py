@@ -1,87 +1,74 @@
 #!/usr/bin/python3
-''' User unittesting '''
-
+"""test for review"""
 import unittest
-import pep8
-import json
-from datetime import datetime
-from models import review
-from models.base_model import BaseModel
 import os
+from models.review import Review
+from models.base_model import BaseModel
+import pep8
 
 
-class TestUserDocu(unittest.TestCase):
-    ''' test Base Documentation '''
-
-    def test_pep8(self):
-        """ Test that models/base_model.py conforms to PEP8 """
-        pep8style = pep8.StyleGuide(quiet=True)
-        result = pep8style.check_files(['models/user.py'])
-        self.assertEqual(result.total_errors, 0, "Fix Your PEP8 Style")
-
-    def test_pep8_base(self):
-        """ Test the test file xD """
-        pep8style = pep8.StyleGuide(quiet=True)
-        r = pep8style.check_files(['tests/test_models/test_user.py'])
-        self.assertEqual(r.total_errors, 0, "Fix Your PEP8 Style")
-
-    def test_docstring(self):
-        """test if docstring"""
-        self.assertIsNotNone(review.Review.__doc__)
-
-    def test_docmodule(self):
-        """ Tests module """
-        self.assertTrue(len(review.__doc__) >= 1)
-
-
-class TestUser(unittest.TestCase):
-    ''' Test base class '''
+class TestReview(unittest.TestCase):
+    """this will test the place class"""
 
     @classmethod
     def setUpClass(cls):
-        '''
-        is called with the class as the only argument
-        and must be decorated as a classmethod():
-        '''
-        pass
+        """set up for test"""
+        cls.rev = Review()
+        cls.rev.place_id = "4321-dcba"
+        cls.rev.user_id = "123-bca"
+        cls.rev.text = "The srongest in the Galaxy"
 
     @classmethod
-    def tearDown(cls):
-        ''' After tests, remove json file '''
+    def teardown(cls):
+        """at the end of the test this will tear it down"""
+        del cls.rev
+
+    def tearDown(self):
+        """teardown"""
         try:
-            remove("file.json")
+            os.remove("file.json")
         except Exception:
             pass
 
-    def test_subClass(self):
-        '''Check if object have inheritance of the superclass'''
-        obj = review.Review()
-        self.assertTrue(issubclass(type(obj), BaseModel))
+    def test_pep8_Review(self):
+        """Tests pep8 style"""
+        style = pep8.StyleGuide(quiet=True)
+        p = style.check_files(['models/review.py'])
+        self.assertEqual(p.total_errors, 0, "fix pep8")
 
-    def test_typos(self):
-        ''' check for attributes '''
-        obj = review.Review()
-        self.assertEqual(type(obj.place_id), str)
-        self.assertEqual(type(obj.user_id), str)
-        self.assertEqual(type(obj.text), str)
-        self.assertEqual(type(obj.id), str)
-        self.assertEqual(type(obj.created_at), datetime)
-        self.assertEqual(type(obj.updated_at), datetime)
-        self.assertEqual(obj.__class__.__name__, 'Review')
+    def test_checking_for_docstring_Review(self):
+        """checking for docstrings"""
+        self.assertIsNotNone(Review.__doc__)
 
-    def test_verify_attr(self):
-        ''' check for attributes '''
-        obj = review.Review()
-        self.assertTrue(hasattr(obj, 'place_id'))
-        self.assertTrue(hasattr(obj, 'user_id'))
-        self.assertTrue(hasattr(obj, 'text'))
-        self.assertTrue(hasattr(obj, 'id'))
-        self.assertTrue(hasattr(obj, 'created_at'))
-        self.assertTrue(hasattr(obj, 'updated_at'))
-        self.assertEqual(obj.__class__.__name__, 'Review')
+    def test_attributes_review(self):
+        """chekcing if review have attributes"""
+        self.assertTrue('id' in self.rev.__dict__)
+        self.assertTrue('created_at' in self.rev.__dict__)
+        self.assertTrue('updated_at' in self.rev.__dict__)
+        self.assertTrue('place_id' in self.rev.__dict__)
+        self.assertTrue('text' in self.rev.__dict__)
+        self.assertTrue('user_id' in self.rev.__dict__)
 
-    def test_kwargs(self):
-        """Test the class - BaseModel passing kwargs """
-        dictionary = {'id': '662a23b3-abc7-4f43-81dc-64c000000c00'}
-        user1 = review.Review(**dictionary)
-        self.assertTrue(issubclass(user1.__class__, BaseModel))
+    def test_is_subclass_Review(self):
+        """test if review is subclass of BaseModel"""
+        self.assertTrue(issubclass(self.rev.__class__, BaseModel), True)
+
+    def test_attribute_types_Review(self):
+        """test attribute type for Review"""
+        self.assertEqual(type(self.rev.text), str)
+        self.assertEqual(type(self.rev.place_id), str)
+        self.assertEqual(type(self.rev.user_id), str)
+
+    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") == "db", "No apply for db")
+    def test_save_Review(self):
+        """test if the save works"""
+        self.rev.save()
+        self.assertNotEqual(self.rev.created_at, self.rev.updated_at)
+
+    def test_to_dict_Review(self):
+        """test if dictionary works"""
+        self.assertEqual('to_dict' in dir(self.rev), True)
+
+
+if __name__ == "__main__":
+    unittest.main()
