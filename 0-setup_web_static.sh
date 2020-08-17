@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 # This script for configurate servers for site-web
-sudo apt-get -y upgrade
 sudo apt-get -y update
 sudo apt-get -y install nginx
 sudo mkdir -p /data/web_static/releases/test/
