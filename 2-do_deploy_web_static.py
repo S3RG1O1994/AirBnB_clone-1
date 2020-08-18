@@ -5,6 +5,7 @@ import os.path
 
 env.hosts = ['34.74.248.124', '35.237.140.145']
 
+
 def do_deploy(archive_path):
     ''' deploy '''
     if os.path.isfile(archive_path):
