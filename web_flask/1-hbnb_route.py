@@ -5,8 +5,14 @@ from flask import Flask
 app = Flask(__name__)
 
 
-@app.route('/hbnb')
+@app.route('/', strict_slashes=False)
 def index():
+    '''This return string in the page'''
+    return 'Hello HBNB!'
+
+
+@app.route('/hbnb')
+def index_hbtn():
     '''This return string in the page'''
     return 'HBNB'
 
