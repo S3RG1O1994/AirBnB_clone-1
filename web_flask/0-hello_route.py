@@ -1,8 +1,7 @@
 #!/usr/bin/python3
-# Scro that starts flaks web application
+# Script that starts flaks web application
 
 from flask import Flask
-'''This function is for edit html'''
 
 app = Flask(__name__)
 
