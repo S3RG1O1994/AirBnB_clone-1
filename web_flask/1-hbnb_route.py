@@ -11,7 +11,7 @@ def index():
     return 'Hello HBNB!'
 
 
-@app.route('/hbnb')
+@app.route('/hbnb', strict_slashes=False)
 def index_hbtn():
     '''This return string in the page'''
     return 'HBNB'
