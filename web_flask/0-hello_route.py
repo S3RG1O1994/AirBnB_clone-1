@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+# Scro that starts flaks web application
+
 from flask import Flask
 '''This function is for edit html'''
 
@@ -8,7 +10,7 @@ app = Flask(__name__)
 @app.route('/', strict_slashes=False)
 def index():
     '''This return string in the page'''
-    return 'HBNB'
+    return 'Hello HBNB!'
 
 
 if __name__ == '__main__':

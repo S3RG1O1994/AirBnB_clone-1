@@ -8,7 +8,7 @@ app = Flask(__name__)
 @app.route('/hbnb')
 def index():
     '''This return string in the page'''
-    return 'Hello HBNB!'
+    return 'HBNB'
 
 
 if __name__ == '__main__':
