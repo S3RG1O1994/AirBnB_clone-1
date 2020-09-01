@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+# If you don't need to execute a command, just comment it
+
+pk= "~/.ssh/id_rsa" #Path to private key
+user= "ubuntu" #username in servers
+ip1="34.74.248.124" #IP of your first server
+ip2="35.237.140.145" #IP of your second server
+hid="1521" #Holberton ID
+
+# Uninstall nginx, it will be reinstalled from 4-not_found_page_404 file
+sudo apt-get purge nginx nginx-common nginx-full
+
+# Script for Tranfering a file
+echo "#!/usr/bin/env bash
+scp -i \"\$4\" -o StrictHostKeyChecking=no \"\$1\" \"\$3@\$2:~/\"
+" > /tmp/0-transfer_file
+sudo chmod u+x /tmp/0-transfer_file
+
+# Tranfer configuration files
+/tmp/0-transfer_file ../holberton-system_engineering-devops/0x0C-web_server/4-not_found_page_404 $ip1 $user $pk
+/tmp/0-transfer_file ../holberton-system_engineering-devops/0x0C-web_server/4-not_found_page_404 $ip2 $user $pk
+/tmp/0-transfer_file 0-setup_web_static.sh $ip1 $user $pk
+/tmp/0-transfer_file 0-setup_web_static.sh $ip2 $user $pk
+sudo rm /tmp/0-transfer_file
+
+#Executes tranfered files
+ssh $user@$ip1 -i $pk 'sudo ~/4-not_found_page_404'
+ssh $user@$ip2 -i $pk 'sudo ~/4-not_found_page_404'
+ssh $user@$ip1 -i $pk 'sudo ~/0-setup_web_static.sh'
+ssh $user@$ip2 -i $pk 'sudo ~/0-setup_web_static.sh'
+
+#Configure right hostnames
+ssh $user@$ip1 -i $pk 'sudo hostnamectl set-hostname 1463-web-01' #Change the id to your id
+ssh $user@$ip2 -i $pk 'sudo hostnamectl set-hostname 1463-web-02' #Change the id to your id
+
+#Execute Fabric script
+#fab -f 3-deploy_web_static.py deploy -i $pk -u $user
