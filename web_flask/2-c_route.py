@@ -20,7 +20,7 @@ def index_hbnb():
 @app.route('/c/<text>', strict_slashes=False)
 def index_c(text):
     '''This is return string pass in text'''
-    return 'C {}'.format(text)
+    return 'C {}'.format(text.replace('_', ' '))
 
 
 if __name__ == '__main__':
