@@ -27,7 +27,7 @@ def index_c(text):
 @app.route('/python/<text>', strict_slashes=False)
 def index_python(text='is cool'):
     '''Python (text)'''
-    return 'python {}'.format(text.replace('_', ' '))
+    return 'Python {}'.format(text.replace('_', ' '))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
