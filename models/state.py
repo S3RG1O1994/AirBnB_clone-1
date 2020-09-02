@@ -19,6 +19,7 @@ class State(BaseModel, Base):
     else:
         @property
         def cities(self):
+            '''Return the list of city instances with state_id'''
             ret_list = []
             city_dir = models.storage.all(City)
             for sub_dir in city_dir.values():
