@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# Script that starts flaks web application
+''' Script that starts flaks web application '''
 
 from flask import Flask
 
@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route('/', strict_slashes=False)
 def index():
-    """This return string in the page"""
+    '''This return string in the page'''
     return 'Hello HBNB!'
 
 
