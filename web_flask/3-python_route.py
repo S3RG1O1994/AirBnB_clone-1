@@ -8,13 +8,13 @@ app = Flask(__name__)
 @app.route('/', strict_slashes=False)
 def index():
     '''This return string in the page'''
-    return 'HBNB'
+    return 'Hello HBNB!'
 
 
 @app.route('/hbnb', strict_slashes=False)
 def index_hbnb():
     '''This return string in the page'''
-    return 'Hello HBNB!'
+    return 'HBNB'
 
 
 @app.route('/c/<text>', strict_slashes=False)
