@@ -7,27 +7,26 @@ app = Flask(__name__)
 
 @app.route('/', strict_slashes=False)
 def index():
-    '''This return string in the page'''
-    return 'HBNB'
+	'''This return string in the page'''
+	return 'HBNB'
 
 
-@app.route('/hbnb')
+@app.route('/hbnb', strict_slashes=False)
 def index_hbnb():
-    '''This return string in the page'''
-    return 'Hello HBNB!'
+	'''This return string in the page'''
+	return 'Hello HBNB!'
 
 
-@app.route('/c/<text>')
+@app.route('/c/<text>', strict_slashes=False)
 def index_c(text):
-    '''This is return string pass in text'''
-    return 'C {}'.format(text)
+	'''This is return string pass in text'''
+	return 'C {}'.format(text)
 
 
-@app.route('/python')
-@app.route('/python/')
-@app.route('/python/<string:text>')
+@app.route('/python/', strict_slashes=False)
+@app.route('/python/<string:text>', strict_slashes=False)
 def index_python(text='is cool'):
-    return 'python {}'.format(text)
+	return 'python {}'.format(text)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+	app.run(host='0.0.0.0', port=5000)
