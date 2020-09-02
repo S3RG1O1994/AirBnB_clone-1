@@ -38,7 +38,7 @@ class DBStorage:
                 # coso.update({kay:item})
                 coso[kay] = item
         else:
-            clase = [City, State, User, Place, Review,]# Amenity]
+            clase = [City, State, User, Place, Review]  # Amenity
             for box in clase:
                 for item in self.__session.query(box):
                     kay = "{}.{}".format(type(item).__name__, item.id)
